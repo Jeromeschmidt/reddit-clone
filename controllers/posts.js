@@ -16,14 +16,20 @@ module.exports = (app) => {
 
   app.get("/posts/:id", function(req, res) {
   // LOOK UP THE POST
-  Post.findById(req.params.id).lean()
-    .then(post => {
-      res.render("layouts/posts-show", { post });
-    })
-    .catch(err => {
-      console.log(err.message);
-    });
-    });
+    Post.findById(req.params.id).lean().populate('comments').then((post) => {
+      res.render('layouts/posts-show', { post })
+    }).catch((err) => {
+      console.log(err.message)
+  })
+ });
+  // Post.findById(req.params.id).lean()
+  //   .then(post => {
+  //     res.render("layouts/posts-show", { post });
+  //   })
+  //   .catch(err => {
+  //     console.log(err.message);
+  //   });
+  //   });
 
     // SUBREDDIT
     app.get("/n/:subreddit", function(req, res) {
