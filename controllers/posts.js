@@ -3,22 +3,8 @@ const User = require('../models/user');
 
 module.exports = (app) => {
 
-    // INDEX
-    app.get('/', (req, res) => {
-        var currentUser = req.user;
-        // res.render('home', {});
-        console.log(req.cookies);
-        Post.find({}).lean().populate('author')
-        .then(posts => {
-            res.render('layouts/posts-index', { posts, currentUser });
-            // res.render('home', {});
-        }).catch(err => {
-            console.log(err.message);
-        })
-    })
-
     // CREATE
-    app.post("/posts/new", (req, res) => { if (req.user) { var post = new Post(req.body); post.author = req.user._id;
+    app.post("/post/new", (req, res) => { if (req.user) { var post = new Post(req.body); post.author = req.user._id;
         post.save()
                 .then(post => {
                     return User.findById(req.user._id);
@@ -36,6 +22,65 @@ module.exports = (app) => {
             return res.status(401); // UNAUTHORIZED
         }
     });
+    // app.post("/post/new", (req, res) => {
+    //   if (req.user) {
+    //     console.log(req.user)
+    //     const post = new Post(req.body);
+    //     post.author = req.user._id;
+    //     // post.upVotes = [];
+    //     // post.downVotes = [];
+    //     // post.voteScore = 0;
+    //     post
+    //       .save()
+    //       .then(post => {
+    //         return User.findById(req.user._id)
+    //       })
+    //       .then(user => {
+    //         user.posts.unshift(post);
+    //         user.save();
+    //         res.redirect(`/posts/${post._id}`)
+    //       })
+    //       .catch(err => {
+    //         console.log(err.message)
+    //       });
+    //   } else {
+    //     return res.status(401); // UNAUTHORIZED
+    //   }
+    // });
+
+    // INDEX
+    app.get('/', (req, res) => {
+        var currentUser = req.user;
+        // res.render('home', {});
+        console.log(req.cookies);
+        Post.find({}).lean().populate('author')
+        .then(posts => {
+            res.render('layouts/posts-index', { posts, currentUser });
+            // res.render('home', {});
+        }).catch(err => {
+            console.log(err.message);
+        })
+    })
+
+
+    // app.post("/posts/new", (req, res) => { if (req.user) { var post = new Post(req.body); post.author = req.user._id;
+    //     post.save()
+    //             .then(post => {
+    //                 return User.findById(req.user._id);
+    //             })
+    //             .then(user => {
+    //                 user.posts.unshift(post);
+    //                 user.save();
+    //                 // REDIRECT TO THE NEW POST
+    //                 res.redirect(`/posts/${post._id}`);
+    //             })
+    //             .catch(err => {
+    //                 console.log(err.message);
+    //             });
+    //     } else {
+    //         return res.status(401); // UNAUTHORIZED
+    //     }
+    // });
 
     // SHOW
      app.get("/posts/:id", function (req, res) {

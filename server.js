@@ -74,9 +74,10 @@ app.get("/", (req, res) => {
 //     })
 // })
 
-app.get("/posts/new", function(req,res){
-    return res.render("layouts/posts-new")
-})
+// app.get("/posts/new", function(req,res){
+//     return res.render("layouts/posts-new")
+// })
+app.get('/post/new', (req, res) => res.render('layouts/posts-new'))
 
 // Start Server
 app.listen(3000, () => {
