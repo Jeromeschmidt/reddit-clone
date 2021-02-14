@@ -44,7 +44,7 @@ module.exports = (app) => {
         var currentUser = req.user;
         Post.findById(req.params.id).populate('comments').lean()
             .then(post => {
-                res.render("posts-show", { post, currentUser });
+                res.render("layouts/posts-show", { post, currentUser });
             })
             .catch(err => {
                 console.log(err.message);
@@ -56,7 +56,7 @@ module.exports = (app) => {
         var currentUser = req.user;
         Post.find({ subreddit: req.params.subreddit }).lean()
             .then(posts => {
-                res.render("posts-index", { posts, currentUser });
+                res.render("layouts/posts-index", { posts, currentUser });
             })
             .catch(err => {
                 console.log(err);

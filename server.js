@@ -48,6 +48,7 @@ require('./controllers/comments.js')(app);
 // Set db
 require('./data/reddit-db');
 require('./controllers/auth.js')(app);
+require('./controllers/replies.js')(app);
 
 const Post = require('./models/post');
 const User = require('./controllers/auth.js');
