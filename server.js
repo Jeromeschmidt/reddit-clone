@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cookieParser()); // Add this after you initialize express.
 
+app.use(express.static('public'));
 
 // Add after body parser initialization!
 app.use(expressValidator());
