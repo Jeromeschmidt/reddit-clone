@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cookieParser()); // Add this after you initialize express.
 
+
 // Add after body parser initialization!
 app.use(expressValidator());
 
@@ -27,6 +28,21 @@ app.engine('handlebars', exphbs({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'handlebars');
 
+var checkAuth = (req, res, next) => {
+  console.log("Checking authentication");
+  if (typeof req.cookies.nToken === "undefined" || req.cookies.nToken === null) {
+    req.user = null;
+  } else {
+    var token = req.cookies.nToken;
+    var decodedToken = jwt.decode(token, { complete: true }) || {};
+    req.user = decodedToken.payload;
+  }
+
+  next();
+};
+app.use(checkAuth);
+
+
 require('./controllers/posts.js')(app);
 require('./controllers/comments.js')(app);
 // Set db
@@ -36,15 +52,27 @@ require('./controllers/auth.js')(app);
 const Post = require('./models/post');
 const User = require('./controllers/auth.js');
 
-app.get('/', (req, res) => {
-  Post.find({}).lean()
+app.get("/", (req, res) => {
+  var currentUser = req.user;
+
+  Post.find({})
     .then(posts => {
-      res.render('layouts/posts-index', { posts });
+      res.render("layouts/posts-index", { posts, currentUser });
     })
     .catch(err => {
       console.log(err.message);
-    })
-})
+    });
+});
+
+// app.get('/', (req, res) => {
+//   Post.find({}).lean()
+//     .then(posts => {
+//       res.render('layouts/posts-index', { posts });
+//     })
+//     .catch(err => {
+//       console.log(err.message);
+//     })
+// })
 
 app.get("/posts/new", function(req,res){
     return res.render("layouts/posts-new")
